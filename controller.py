@@ -47,7 +47,7 @@ def get_videos_info():
             return jsonify('VideoId is needed'), 400
 
         with Session(engine) as session:
-            result = session.query(
+            info = session.query(
                 Video.id,
                 Video.title ,
                 Channel.channel_id,
@@ -100,7 +100,9 @@ def get_videos_info():
                         .join(Video, Video.id == VideoStat.video_id)\
                             .join(Channel, Channel.channel_id == Video.channel_id).all()
 
-        return jsonify(dict(result[0])), 200
+        result = dict(info[0]) if info else []
+
+        return jsonify(result), 200
 
     except Exception as e:
         return jsonify(e), 400
